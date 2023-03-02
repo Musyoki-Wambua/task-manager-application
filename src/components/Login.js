@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const LoginForm = ({ closeModal }) => {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,30 +12,47 @@ const LoginForm = ({ closeModal }) => {
     setPassword(event.target.value);
   };
 
-  const handleLoginSubmit = (event) => {
+  
+
+  const handleFormSubmit = (event) => {
     event.preventDefault();
-    // TODO: Handle login submission
-    closeModal();
+    fetch("http://localhost:9292/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((response) => response.json())
+      .then((data) => {                                                                                                 
+        if (data.code === 200) {
+
+          console.log("Login successful!");
+        } else {
+          console.log("Login failed: " + data.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
-    <form onSubmit={handleLoginSubmit}>
+    <div>
       <h2>Login</h2>
-      <label>
-        Email:
-        <input type="email" value={email} onChange={handleEmailChange} />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-      </label>
-      <button type="submit">Submit</button>
-    </form>
+      <form onSubmit={handleFormSubmit}>
+        <label>
+          Email:
+          <input type="email" name="email" value={email} onChange={handleEmailChange} />
+        </label>
+        <br />
+        <label>
+          Password:
+          <input type="password" name="password" value={password} onChange={handlePasswordChange} />
+        </label>
+        <br />
+        <button type="submit">Login</button>
+      </form>
+    </div>
   );
-};
+}
 
-export default LoginForm;
+export default Login;
