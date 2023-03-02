@@ -1,20 +1,14 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 
-
-const Task = () => {
-    const[tasks, setTasks]= useState([]);
-
-    useEffect (() => {
-        fetch(URL)
-    }, [])
-
-
-    return (
-        <div>
-            
-        </div>
-    );
+const Task = ({ task }) => {
+  return (
+    <div>
+      <h3>{task.title}</h3>
+      <p>{task.description}</p>
+      <p>{task.due}</p>
+      <p>{task.status}</p>
+    </div>
+  );
 };
 
 export default Task;
