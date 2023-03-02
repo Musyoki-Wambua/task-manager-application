@@ -11,8 +11,8 @@ function App() {
   return (
     <div className="App">
       {/* <Navbar /> */}
-      <Signup />
-      <Login />
+      {/* <Signup />
+      <Login /> */}
       <Task />
       <TaskList />
 
