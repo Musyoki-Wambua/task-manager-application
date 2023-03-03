@@ -6,11 +6,24 @@ function TaskList() {
   const [due, setDue] = useState('');
 
   useEffect(() => {
-    fetch('/tasks')
+    fetch('http://localhost:9292/tasks')
       .then(res => res.json())
       .then(data => setTasks(data))
       .catch(err => console.error(err));
   }, []);
+
+  const [filter, setFilter] = useState({ completed: false, dueDate: null });
+
+  function handleFilterChange(event) {
+    const name = event.target.name;
+    const value = event.target.value;
+    setFilter({ ...filter, [name]: value });
+  }
+
+  const filteredTasks = tasks
+    .filter(task => filter.completed ? task.completed === filter.completed : true)
+    .filter(task => filter.dueDate ? task.due === filter.dueDate : true)
+    .sort((a, b) => a.due.localeCompare(b.due)); // Sort tasks by due date
 
   const handleTaskClick = (id) => {
     const clickedTask = tasks.find(task => task.id === id);
