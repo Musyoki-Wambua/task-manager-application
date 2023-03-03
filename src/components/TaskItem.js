@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-function TaskItem( task, onUpdate ) {
+function TaskItem(task, onUpdate ) {
   const [description, setDescription] = useState(task.description);
   const [due, setDue] = useState(task.due);
 
@@ -26,18 +26,12 @@ function TaskItem( task, onUpdate ) {
       onUpdate(data);
     })
     .catch(error => console.error(error));
-  }
+  } 
   
   return (
     <div>
+      <h2>{task.title}</h2>
       <label htmlFor={`description-${task.id}`}>Description:</label>
-      <input
-        type="text"
-        id={`title-${task.id}`}
-        value={description}
-        onChange={event => setDescription(event.target.value)}
-      />
-      <br />
       <input
         type="text"
         id={`description-${task.id}`}
@@ -53,6 +47,7 @@ function TaskItem( task, onUpdate ) {
         onChange={event => setDue(event.target.value)}
       />
       <br />
+      <p>Status: {task.status}</p>
       <button onClick={handleUpdate}>Update</button>
     </div>
   );

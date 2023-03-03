@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TaskItem from './TaskItem';
 
 function TaskList() {
   const [tasks, setTasks] = useState([]);
@@ -25,53 +26,48 @@ function TaskList() {
     .filter(task => filter.dueDate ? task.due === filter.dueDate : true)
     .sort((a, b) => a.due.localeCompare(b.due)); // Sort tasks by due date
 
-  const handleTaskClick = (id) => {
-    const clickedTask = tasks.find(task => task.id === id);
-
-    const updatedDescription = prompt('Enter updated description:', clickedTask.description);
-    const updatedDue = prompt('Enter updated due date (YYYY-MM-DD):', clickedTask.due);
-
-    fetch(`/tasks/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        description: updatedDescription,
-        due: updatedDue
-      })
-    })
-      .then(res => {
-        if (res.ok) {
-          const updatedTasks = tasks.map(task => {
-            if (task.id === id) {
-              return {
-                ...task,
-                description: updatedDescription,
-                due: updatedDue
-              };
-            }
-            return task;
-          });
-          setTasks(updatedTasks);
-        } else {
-          throw new Error('Failed to update task.');
-        }
-      })
-      .catch(err => console.error(err));
+  const handleTaskUpdate = (updatedTask) => {
+    const updatedTasks = tasks.map(task => {
+      if (task.id === updatedTask.id) {
+        return updatedTask;
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
   };
 
   return (
     <div>
       <h1>Task List</h1>
+      <div>
+        <label htmlFor="completed">Completed:</label>
+        <input
+          type="checkbox"
+          id="completed"
+          name="completed"
+          checked={filter.completed}
+          onChange={handleFilterChange}
+        />
+      </div>
+      <div>
+        <label htmlFor="dueDate">Due Date:</label>
+        <input
+          type="text"
+          id="dueDate"
+          name="dueDate"
+          value={filter.dueDate || ''}
+          onChange={handleFilterChange}
+        />
+      </div>
       <ul>
-        {tasks.map(task => (
-          <li key={task.id} onClick={() => handleTaskClick(task.id)}>
-            <h3>{task.description}</h3>
-            <p>Due: {task.due}</p>
+        {filteredTasks.map(task => (
+          <li key={task.id}>
+            <TaskItem task={task} onUpdate={handleTaskUpdate} />
           </li>
         ))}
       </ul>
     </div>
   );
-}export default TaskList
+}
+
+export default TaskList;
